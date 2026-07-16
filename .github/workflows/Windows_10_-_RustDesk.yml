@@ -1,22 +1,40 @@
-name: Windows - RustDesk
+name: Windows 10/11 Cloud VPS via RustDesk
 
-on:
-  workflow_dispatch:
+on: 
+  workflow_dispatch: # Allows you to start the VPS manually with a button click
 
 jobs:
   build:
-    name: Start Building...
     runs-on: windows-latest
-    
-    
+   
     steps:
-      - name: Downloading & Installing Essentials
-        run: |
-          Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/qdyd4p9t6xoabl95n5o3g/Downloads.bat?rlkey=snr74vv1vr8k5suujugvrhjtm&dl=1" -OutFile "Downloads.bat"
-          cmd /c Downloads.bat
-
-      - name: Log In To AnyDesk
-        run: cmd /c show.bat
-
-      - name: Time Counter
-        run: python time.py
+    - name: Download and Install RustDesk
+      run: |
+        # Create a temp directory and download RustDesk
+        New-Item -ItemType Directory -Force -Path C:\RustDesk
+        Invoke-WebRequest -Uri "https://github.com/rustdesk/rustdesk/releases/download/1.3.0/rustdesk-1.3.0-x86_64.exe" -OutFile "C:\RustDesk\rustdesk.exe"
+        
+    - name: Configure and Start RustDesk Service
+      run: |
+        # Install RustDesk as a background Windows service
+        Start-Process -FilePath "C:\RustDesk\rustdesk.exe" -ArgumentList "--silent-install" -Wait
+        
+        # Set a fixed, permanent password so you can log in
+        # REPLACE 'YourSecurePassword123' with your own custom password!
+        & "C:\Program Files\RustDesk\rustdesk.exe" --password YourSecurePassword123
+        
+    - name: Fetch RustDesk ID & Keep VPS Alive
+      run: |
+        # Wait a moment for the service to generate an ID
+        Start-Sleep -Seconds 10
+        
+        # Retrieve your unique RustDesk connection ID
+        $stdout = & "C:\Program Files\RustDesk\rustdesk.exe" --get-id
+        Write-Host "============================================="
+        Write-Host "YOUR RUSTDESK VPS ID IS: $stdout"
+        Write-Host "============================================="
+        
+        # This loops endlessly to keep the GitHub runner from shutting down immediately
+        while ($true) {
+            Start-Sleep -Seconds 60
+        }
