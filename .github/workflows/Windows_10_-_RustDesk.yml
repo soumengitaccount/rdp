@@ -42,6 +42,9 @@ jobs:
         Write-Host "============================================="
         Write-Host "YOUR ANYDESK VPS ADDRESS IS: $stdout"
         Write-Host "============================================="
+    - name: Log In To AnyDesk
+      run: |
+          cmd /c show.bat
         
         # Keep the GitHub Actions runner alive so it doesn't shut down
         while ($true) {
