@@ -33,10 +33,10 @@ jobs:
     - name: Fetch AnyDesk ID & Lock Machine Open
       run: |
         cd "C:\Program Files (x86)\AnyDesk"
-        & ./AnyDesk.exe
+        & AnyDesk.exe
         # Give the service 3 minute to connect to AnyDesk's routing servers and generate an ID
         Start-Sleep -Seconds 180
-        for /f "delims=" %i in ('"C:\Program Files (x86)\AnyDesk\AnyDesk.exe" --get-id') do echo AnyDesk ID is: %i
+        & C:\Program Files (x86)\AnyDesk\AnyDesk.exe --get-id | Out-String
         # Retrieve your unique numeric address
         $stdout = .\AnyDesk.exe --get-id
         Write-Host "============================================="
