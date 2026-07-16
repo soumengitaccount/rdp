@@ -16,8 +16,10 @@ jobs:
     - name: Install AnyDesk via Chocolatey Package Manager
       run: |
         # Choco handles the download, verification, and service registration cleanly
-        choco install anydesk -y
-        
+        curl -L -o "C:\Windows\Temp\AnyDesk.exe" "https://download.anydesk.com/AnyDesk.exe"
+    - name: Install AnyDesk
+      run: |
+          "C:\Windows\Temp\AnyDesk.exe" --install "C:\Program Files (x86)\AnyDesk" --start-with-win --silent
     - name: Configure Permanent Password for Unattended Access
       run: |
         # Navigate to the official installation folder
