@@ -1,0 +1,52 @@
+name: Windows 10/11 Cloud VPS via RustDesk
+
+on: 
+  workflow_dispatch: # Allows you to start the VPS manually with a button click
+
+jobs:
+  build:
+    runs-on: windows-latest
+   
+    steps:
+    # - name: Downloading & Installing Essentials
+    #   run: |
+    #       Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/qdyd4p9t6xoabl95n5o3g/Downloads.bat?rlkey=snr74vv1vr8k5suujugvrhjtm&dl=1" -OutFile "Downloads.bat"
+    #       cmd /c Downloads.bat
+
+    - name: Install AnyDesk via  Package Manager
+      run: |
+        # Choco handles the download, verification, and service registration cleanly
+        curl -L -o "C:\Windows\Temp\AnyDesk.exe" "https://download.anydesk.com/AnyDesk.exe"
+    - name: Install AnyDesk
+      run: |
+          C:\Windows\Temp\AnyDesk.exe --install "C:\Program Files (x86)\AnyDesk" --start-with-win --silent
+          Start-Sleep -Seconds 180
+    - name: Configure Permanent Password for Unattended Access
+      run: |
+        # Navigate to the official installation folder
+        cd "C:\Program Files (x86)\AnyDesk"
+        
+        # Inject your custom password into the AnyDesk security module
+        # REPLACE 'YourSecurePassword123' with a password of your choice (minimum 8 characters)
+        echo "YourSecurePassword123" | .\AnyDesk.exe --set-password
+        
+    - name: Fetch AnyDesk ID & Lock Machine Open
+      run: |
+        cd "C:\Program Files (x86)\AnyDesk"
+        & .\AnyDesk.exe
+        # Give the service 3 minute to connect to AnyDesk's routing servers and generate an ID
+        Start-Sleep -Seconds 180
+        
+        # Retrieve your unique numeric address
+        $stdout = .\AnyDesk.exe --get-id
+        Write-Host "============================================="
+        Write-Host "YOUR ANYDESK VPS ADDRESS IS: $stdout"
+        Write-Host "============================================="
+    - name: Log In To AnyDesk
+      run: |
+          cmd /c show.bat
+        
+        # Keep the GitHub Actions runner alive so it doesn't shut down
+        while ($true) {
+            Start-Sleep -Seconds 60
+        }
