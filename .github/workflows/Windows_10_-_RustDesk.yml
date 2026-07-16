@@ -20,6 +20,7 @@ jobs:
     - name: Install AnyDesk
       run: |
           C:\Windows\Temp\AnyDesk.exe --install "C:\Program Files (x86)\AnyDesk" --start-with-win --silent
+          Start-Sleep -Seconds 120
     - name: Configure Permanent Password for Unattended Access
       run: |
         # Navigate to the official installation folder
