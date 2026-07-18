@@ -1,11 +1,21 @@
-# Ubuntu terminal on MyBinder
+# MyBinder-ready repository
 
-This repository builds a plain Ubuntu 24.04 environment for [MyBinder](https://mybinder.org/). It opens directly into a browser terminal instead of a notebook interface.
+This repository is configured to launch with [MyBinder](https://mybinder.org/).
 
-## Launch
+## Upload and launch
 
-1. Push these files to a GitHub repository.
-2. Open `https://mybinder.org/v2/gh/<your-github-user>/<your-repository>/HEAD`.
-3. When the build finishes, use the terminal that opens automatically.
+1. Upload these files and your notebooks (`.ipynb`) or Python scripts to a GitHub repository.
+2. Open [mybinder.org](https://mybinder.org/), paste the GitHub repository URL, and select the branch or tag to launch.
+3. Click **Launch**. Binder installs the packages listed in `requirements.txt` and starts JupyterLab.
 
-The image includes Bash, Python 3, Git, Curl, Nano, Vim, and password-free `sudo` for the temporary `binder` user. MyBinder sessions are temporary and changes are not retained after the session ends.
+## Add project packages
+
+Add any Python libraries your notebooks need to `requirements.txt`, one package per line. For example:
+
+```text
+pandas
+matplotlib
+scikit-learn
+```
+
+`runtime.txt` selects Python 3.11 for the Binder environment.
